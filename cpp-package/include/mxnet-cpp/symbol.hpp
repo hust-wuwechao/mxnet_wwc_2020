@@ -346,7 +346,7 @@ inline Executor *Symbol::SimpleBind(
                       &aux_arrays, args_map, arg_grad_store, grad_req_type,
                       aux_map);
   
-  // 返回一个executor。
+  // 返回一个executor。 
   LG << "return new Executor ";
   return new Executor(*this, context, arg_arrays, grad_arrays, grad_reqs,
                       aux_arrays);

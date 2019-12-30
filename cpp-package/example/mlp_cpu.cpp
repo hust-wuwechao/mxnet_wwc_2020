@@ -90,19 +90,29 @@ int main(int argc, char** argv) {
      ->SetParam("wd", weight_decay);
 
   // Create executor by binding parameters to the model
-  // 
+
+  /*
+  LG << "InferExecutorArray ";
+  InferExecutorArrays(context, &arg_arrays, &grad_arrays, &grad_reqs,
+                      &aux_arrays, args_map, arg_grad_store, grad_req_type,
+                      aux_map); 
+  // 返回一个executor。 
+  LG << "return new Executor ";
+  return new Executor(*this, context, arg_arrays, grad_arrays, grad_reqs,
+                      aux_arrays);
+  */
+
   auto *exec = net.SimpleBind(ctx, args);
   auto arg_names = net.ListArguments();
   for (int i=0; i<arg_names.size(); i++ )
   {
-    LG << " 参数 "<< i<<"  为 " <<[i]; 
+    LG << " 参数 "<< i<<"  为 " <<arg_names[i]; 
   }
   // Start training
   for (int iter = 0; iter < max_epoch; ++iter) 
   {
     int samples = 0;
     train_iter.Reset();
-
     auto tic = std::chrono::system_clock::now();
     while (train_iter.Next()) 
     {
@@ -113,12 +123,17 @@ int main(int argc, char** argv) {
       data_batch.label.CopyTo(&args["label"]);
 
       // Compute gradients
+       LG << "  exec->Forward(true)  开始执行 ********************************** "
       exec->Forward(true);
+       LG << "  exec->Backward()     开始执行 ********************************** "
       exec->Backward();
       // Update parameters
+      LG << "  opt->Update            开始执行 ********************************** "
       for (size_t i = 0; i < arg_names.size(); ++i) 
       {
+        
         if (arg_names[i] == "X" || arg_names[i] == "label") continue;
+        LG << " 参数 "<< i <<"  为 " <<arg_names[i]<< "  执行  "<<" opt->Update(i, exec->arg_arrays[i], exec->grad_arrays[i]);";
         opt->Update(i, exec->arg_arrays[i], exec->grad_arrays[i]);
       }
     }

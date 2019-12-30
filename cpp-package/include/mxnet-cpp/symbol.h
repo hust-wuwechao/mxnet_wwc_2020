@@ -142,9 +142,9 @@ class Symbol {
   /*!
   * \brief construct an operator Symbol, with given input Symbol and config
   * \param name the name of the Symbol
-  * \param input_keys the vector of keys of the input
-  * \param input_values the vector of the intput Symbols
-  * \param config_keys the vector of keys of the config
+  * \param input_keys the vector of keys of the input       输入的key 
+  * \param input_values the vector of the intput Symbols    输入的符号
+  * \param config_keys the vector of keys of the config     
   * \param config_values the vecotr of values of the config
   */
   Symbol(const std::string &operator_name, const std::string &name,

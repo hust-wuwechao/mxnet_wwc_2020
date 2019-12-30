@@ -46,11 +46,11 @@ class Executor {
   friend class Monitor;
  public:
   Executor(const Symbol &symbol, Context context,
-           const std::vector<NDArray> &arg_arrays,
-           const std::vector<NDArray> &grad_arrays,
+           const std::vector<NDArray>   &arg_arrays,
+           const std::vector<NDArray>   &grad_arrays,
            const std::vector<OpReqType> &grad_reqs,
-           const std::vector<NDArray> &aux_arrays,
-           const std::map<std::string, Context> &group_to_ctx =
+           const std::vector<NDArray>   &aux_arrays,
+           const std::map<std::string, Context>  &group_to_ctx =
                std::map<std::string, Context>(),
            Executor *shared_exec = nullptr);
   explicit Executor(const ExecutorHandle &h) { handle_ = h; }
@@ -58,31 +58,38 @@ class Executor {
   * \brief Perform a Forward operation of Operator
   *  After this operation, user can get the result by using function head.
   */
-  void Forward(bool is_train) {
+  void Forward(bool is_train) 
+  {
+    // 
+    LG<<"MXExecutorForward(handle_, is_train ? 1 : 0);"
     MXExecutorForward(handle_, is_train ? 1 : 0);
     mx_uint out_size;
     NDArrayHandle *out_array;
-    CHECK_EQ(MXExecutorOutputs(handle_, &out_size, &out_array), 0);
-    for (mx_uint i = 0; i < out_size; ++i) {
+    CHECK_EQ(MXExecutorOutputs(handle_, &out_size, &out_array), 0);  
+    LG<<"out_size"<<out_size;
+    for (mx_uint i = 0; i < out_size; ++i)
+    {
       outputs[i] = NDArray(out_array[i]);
     }
   }
   /*!
-  * \brief Perform a Backward operation of the Operator.
+  *  \brief Perform a Backward operation of the Operator.
   *  This must be called after Forward.
   *  After this operation, NDArrays specified by grad_in_args_store will be
-  *updated accordingly.
+  *  updated accordingly.
   *  User is allowed to pass in an empty Array if the head node is
   *  loss function and head gradeitn is not needed.
-  *
-  * \param head_grads the gradient of head nodes to be backproped.
+  *  \param head_grads the gradient of head nodes to be backproped.
   */
   void Backward(const std::vector<NDArray> &head_grads =
-                    std::vector<NDArray>()) {
+                    std::vector<NDArray>()) 
+  {
+    
     std::vector<NDArrayHandle> head_grads_;
     for (auto d : head_grads) {
       head_grads_.push_back(d.GetHandle());
     }
+    LG<<" void Backward: head_grads_.size()"<<head_grads_.size();
     if (head_grads_.size() > 0) {
       MXExecutorBackward(handle_, head_grads_.size(), head_grads_.data());
     } else {
