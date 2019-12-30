@@ -62,6 +62,7 @@ int MXExecutorBackward(ExecutorHandle handle,
                        mx_uint len,
                        NDArrayHandle *head_grads) 
                        {
+  LOG(INFO) << "MXExecutorBackwardEx";                       
   return MXExecutorBackwardEx(handle, len, head_grads, true);
 }
 

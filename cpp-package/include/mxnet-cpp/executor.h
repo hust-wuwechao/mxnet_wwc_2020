@@ -87,13 +87,16 @@ class Executor {
   {
     
     std::vector<NDArrayHandle> head_grads_;
-    for (auto d : head_grads) {
+    for (auto d : head_grads) 
+    {
       head_grads_.push_back(d.GetHandle());
     }
     LG<<" void Backward:   head_grads_.size()   "<<head_grads_.size();
-    if (head_grads_.size() > 0) {
+    if (head_grads_.size() > 0) 
+    {
       MXExecutorBackward(handle_, head_grads_.size(), head_grads_.data());
-    } else {
+    } else 
+    {
       MXExecutorBackward(handle_, 0, nullptr);
     }
   }
