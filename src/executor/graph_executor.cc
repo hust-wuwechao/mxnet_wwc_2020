@@ -35,6 +35,7 @@
 #include "../common/exec_utils.h"
 #include "../operator/subgraph/subgraph_property.h"
 
+
 namespace mxnet {
 namespace exec {
 
@@ -63,8 +64,9 @@ GraphExecutor::~GraphExecutor() {
 
 void GraphExecutor::Forward(bool is_train) 
 {
-  LG <<" 进入graph_executor.cc 里面";
-  LG <<" 运行  RunOps(is_train, 0, num_forward_nodes_);  num_forward_nodes_ 为"<<num_forward_nodes_;
+  LOG(INFO) << "进入graph_executor.cc 里面  RunOps \t";
+  //LG << " 进入graph_executor.cc 里面";
+  //LG << " 运行  RunOps(is_train, 0, num_forward_nodes_);  num_forward_nodes_ 为"<<num_forward_nodes_;
   RunOps(is_train, 0, num_forward_nodes_);
 }
 

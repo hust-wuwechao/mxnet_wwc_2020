@@ -145,6 +145,7 @@ int main(int argc, char** argv) {
         opt->Update(i, exec->arg_arrays[i], exec->grad_arrays[i]);
       }
     }
+    
     auto toc = std::chrono::system_clock::now();
 
     Accuracy acc;

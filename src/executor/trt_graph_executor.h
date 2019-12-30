@@ -73,7 +73,6 @@ class TrtGraphExecutor : public GraphExecutor {
 
   // Returns symbol representing the TRT optimized graph for comparison purposes.
   nnvm::Symbol GetOptimizedSymbol();
-
  protected:
   Graph ReinitGraph(Graph&& g, const Context &default_ctx,
         const std::map<std::string, Context> &ctx_map,
