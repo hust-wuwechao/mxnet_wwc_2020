@@ -46,7 +46,8 @@ class Executor {
   friend class Monitor;
  public:
   //  进入构造函数
-  Executor(const Symbol &symbol, Context context,
+  Executor(const Symbol &symbol,
+           Context context,
            const std::vector<NDArray>   &arg_arrays,
            const std::vector<NDArray>   &grad_arrays,
            const std::vector<OpReqType> &grad_reqs,
