@@ -66,7 +66,7 @@ class Executor {
     mx_uint out_size;
     NDArrayHandle *out_array;
     CHECK_EQ(MXExecutorOutputs(handle_, &out_size, &out_array), 0);  
-    LG<<"out_size"<<out_size;
+    LG<<"out_size   "<<out_size;
     for (mx_uint i = 0; i < out_size; ++i)
     {
       outputs[i] = NDArray(out_array[i]);
@@ -89,7 +89,7 @@ class Executor {
     for (auto d : head_grads) {
       head_grads_.push_back(d.GetHandle());
     }
-    LG<<" void Backward: head_grads_.size()"<<head_grads_.size();
+    LG<<" void Backward:   head_grads_.size()   "<<head_grads_.size();
     if (head_grads_.size() > 0) {
       MXExecutorBackward(handle_, head_grads_.size(), head_grads_.data());
     } else {

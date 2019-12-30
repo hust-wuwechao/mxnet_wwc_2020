@@ -49,6 +49,7 @@ int MXExecutorFree(ExecutorHandle handle) {
 }
 
 int MXExecutorForward(ExecutorHandle handle, int is_train) {
+  LG << "MXExecutorForward 函数里面 D:\mxnet_wwc_2020\mxnet_wwc_2020\src\c_api\c_api_executor.cc";
   API_BEGIN();
   Executor *exec = static_cast<Executor*>(handle);
   exec->Forward(is_train != 0);
@@ -57,7 +58,8 @@ int MXExecutorForward(ExecutorHandle handle, int is_train) {
 
 int MXExecutorBackward(ExecutorHandle handle,
                        mx_uint len,
-                       NDArrayHandle *head_grads) {
+                       NDArrayHandle *head_grads) 
+                       {
   return MXExecutorBackwardEx(handle, len, head_grads, true);
 }
 
