@@ -63,7 +63,7 @@ GraphExecutor::~GraphExecutor() {
 
 void GraphExecutor::Forward(bool is_train) 
 {
-  LG <<"进入D:\mxnet_wwc_2020\mxnet_wwc_2020\src\executor\graph_executor.cc 里面";
+  LG <<" 进入D:\mxnet_wwc_2020\mxnet_wwc_2020\src\executor\graph_executor.cc 里面";
   LG <<" 运行  RunOps(is_train, 0, num_forward_nodes_);  num_forward_nodes_ 为"<<num_forward_nodes_;
   RunOps(is_train, 0, num_forward_nodes_);
 }

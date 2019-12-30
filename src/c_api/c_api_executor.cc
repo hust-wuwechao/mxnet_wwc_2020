@@ -52,10 +52,7 @@ int MXExecutorFree(ExecutorHandle handle) {
 
 int MXExecutorForward(ExecutorHandle handle, int is_train) 
 {
-  
-  //LG << "MXExecutorForward 函数里面  src c_api c_api_executor.cc";
   API_BEGIN();
-  LG << "MXExecutorForward 函数里面  src c_api c_api_executor.cc";
   Executor *exec = static_cast<Executor*>(handle);
   exec->Forward(is_train != 0);
   API_END();
