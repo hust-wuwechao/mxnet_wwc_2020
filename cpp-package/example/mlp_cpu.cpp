@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
   const int image_size = 28;
   const std::vector<int> layers{128, 64, 10};
   const int batch_size = 100;
-  const int max_epoch = 3;
+  const int max_epoch = 1;
   const float learning_rate = 0.1;
   const float weight_decay = 1e-2;
 
@@ -75,10 +75,14 @@ int main(int argc, char** argv) {
   args["X"] = NDArray(Shape(batch_size, image_size*image_size), ctx);
   args["label"] = NDArray(Shape(batch_size), ctx);
   // Let MXNet infer shapes other parameters such as weights
+  // 推测其他的
   net.InferArgsMap(ctx, &args, args);
   // Initialize all parameters with uniform distribution U(-0.01, 0.01)
   auto initializer = Uniform(0.01);
-  for (auto& arg : args) {
+  // 参数初始化
+  // 
+  for (auto& arg : args) 
+  {
     // arg.first is parameter name, and arg.second is the value
     initializer(arg.first, &arg.second);
   }
@@ -90,18 +94,6 @@ int main(int argc, char** argv) {
      ->SetParam("wd", weight_decay);
 
   // Create executor by binding parameters to the model
-
-  /*
-  LG << "InferExecutorArray ";
-  InferExecutorArrays(context, &arg_arrays, &grad_arrays, &grad_reqs,
-                      &aux_arrays, args_map, arg_grad_store, grad_req_type,
-                      aux_map); 
-  // 返回一个executor。 
-  LG << "return new Executor ";
-  return new Executor(*this, context, arg_arrays, grad_arrays, grad_reqs,
-                      aux_arrays);
-  */
-
   auto *exec = net.SimpleBind(ctx, args);
   auto arg_names = net.ListArguments();
   for (int i=0; i<arg_names.size(); i++ )

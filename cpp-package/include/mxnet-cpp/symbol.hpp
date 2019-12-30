@@ -241,48 +241,64 @@ inline void Symbol::InferShape(
 }
 
 inline void Symbol::InferExecutorArrays(
-    const Context &context, std::vector<NDArray> *arg_arrays,
-    std::vector<NDArray> *grad_arrays, std::vector<OpReqType> *grad_reqs,
+    const Context &context, 
+    std::vector<NDArray> *arg_arrays,
+    std::vector<NDArray> *grad_arrays, 
+    std::vector<OpReqType> *grad_reqs,
     std::vector<NDArray> *aux_arrays,
     const std::map<std::string, NDArray> &args_map,
     const std::map<std::string, NDArray> &arg_grad_store,
     const std::map<std::string, OpReqType> &grad_req_type,
     const std::map<std::string, NDArray> &aux_map) const {
-
+  //
   const auto arg_name_list = ListArguments();
   std::vector<std::vector<mx_uint> > in_shapes, aux_shapes, out_shapes;
+  // 参数名字和对应的形状
   std::map<std::string, std::vector<mx_uint> > arg_shapes;
-
-  for (const auto &arg_name : arg_name_list) {
+  // 明白了
+  for (const auto &arg_name : arg_name_list) 
+  {
     auto iter = args_map.find(arg_name);
     if (iter != args_map.end()) {
       arg_shapes[arg_name] = iter->second.GetShape();
     }
   }
-
+  // 根据输入参数的形状推测 &in_shapes, &aux_shapes, &out_shapes
   InferShape(arg_shapes, &in_shapes, &aux_shapes, &out_shapes);
-
-  for (size_t i = 0; i < in_shapes.size(); ++i) {
+  //
+  //LG << arg_arrays.size()<<grad_arrays.size()<<
+  for (size_t i = 0; i < in_shapes.size(); ++i) 
+  {
     const auto &shape = in_shapes[i];
     const auto &arg_name = arg_name_list[i];
     auto iter_arg = args_map.find(arg_name);
-    if (iter_arg != args_map.end()) {
+
+    if (iter_arg != args_map.end()) 
+    {
+      // 参数的NDArray推送到 arg_arrays里面
       arg_arrays->push_back(iter_arg->second);
-    } else {
+    } else 
+    {
       arg_arrays->push_back(NDArray(shape, context, false));
       NDArray::SampleGaussian(0, 1, &arg_arrays->back());
     }
+    //const std::map<std::string, NDArray> &arg_grad_store,
     auto iter_grad = arg_grad_store.find(arg_name);
     if (iter_grad != arg_grad_store.end()) {
       grad_arrays->push_back(iter_grad->second);
-    } else {
+    } else 
+    {
       grad_arrays->push_back(NDArray(shape, context, false));
     }
+    // const std::map<std::string, OpReqType> &grad_req_type,
     auto iter_req = grad_req_type.find(arg_name);
-    if (iter_req != grad_req_type.end()) {
+    if (iter_req != grad_req_type.end()) 
+    {
       grad_reqs->push_back(iter_req->second);
-    } else if (arg_name.rfind("data") != std::string::npos
-            || arg_name.rfind("label") != std::string::npos) {
+    } 
+    else if (arg_name.rfind("data") != std::string::npos
+            || arg_name.rfind("label") != std::string::npos) 
+    {
       grad_reqs->push_back(OpReqType::kNullOp);
     } else {
       grad_reqs->push_back(OpReqType::kWriteTo);
@@ -333,21 +349,27 @@ inline void Symbol::InferArgsMap(
 }
 
 inline Executor *Symbol::SimpleBind(
-    const Context &context, const std::map<std::string, NDArray> &args_map,
-    const std::map<std::string, NDArray> &arg_grad_store,
+    const Context &context, 
+    const std::map<std::string, NDArray>   &args_map,
+    const std::map<std::string, NDArray>   &arg_grad_store,
     const std::map<std::string, OpReqType> &grad_req_type,
-    const std::map<std::string, NDArray> &aux_map) {
+    const std::map<std::string, NDArray>   &aux_map)
+{
+  // 新建4个数组
   std::vector<NDArray> arg_arrays;
   std::vector<NDArray> grad_arrays;
   std::vector<OpReqType> grad_reqs;
   std::vector<NDArray> aux_arrays;
   LG << "InferExecutorArray ";
+  // 分别得到这4个数组的具体的值 ，由后面4个参数来决定
   InferExecutorArrays(context, &arg_arrays, &grad_arrays, &grad_reqs,
                       &aux_arrays, args_map, arg_grad_store, grad_req_type,
                       aux_map);
   
   // 返回一个executor。 
   LG << "return new Executor ";
+  // 接下来有这4个数组来负责。构建 Executor
+  LG<<" arg_arrays, grad_arrays, grad_reqs, aux_arrays"<<arg_arrays.size()<< grad_arrays.size()<< grad_reqs.size()<<aux_arrays.size();
   return new Executor(*this, context, arg_arrays, grad_arrays, grad_reqs,
                       aux_arrays);
 }
