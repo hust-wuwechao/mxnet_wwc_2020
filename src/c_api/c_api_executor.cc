@@ -22,6 +22,7 @@
  * \file c_api_executor.cc
  * \brief C API of mxnet
  */
+#include "dmlc/logging.h"
 #include <mxnet/base.h>
 #include <mxnet/c_api.h>
 #include <mxnet/executor.h>
@@ -29,6 +30,7 @@
 #include "../executor/graph_executor.h"
 #if MXNET_USE_TENSORRT
 #include "../executor/trt_graph_executor.h"
+
 #endif  // MXNET_USE_TENSORRT
 
 int MXExecutorPrint(ExecutorHandle handle, const char **out_str) {
