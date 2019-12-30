@@ -45,6 +45,7 @@ class Optimizer;
 class Executor {
   friend class Monitor;
  public:
+  //  进入构造函数
   Executor(const Symbol &symbol, Context context,
            const std::vector<NDArray>   &arg_arrays,
            const std::vector<NDArray>   &grad_arrays,
@@ -53,6 +54,7 @@ class Executor {
            const std::map<std::string, Context>  &group_to_ctx =
                std::map<std::string, Context>(),
            Executor *shared_exec = nullptr);
+
   explicit Executor(const ExecutorHandle &h) { handle_ = h; }
   /*!
   * \brief Perform a Forward operation of Operator
