@@ -71,13 +71,11 @@ int main(int argc, char** argv) {
   auto net = mlp(layers);
 
   Context ctx = Context::cpu();  // Use CPU for training
-
   std::map<std::string, NDArray> args;
   args["X"] = NDArray(Shape(batch_size, image_size*image_size), ctx);
   args["label"] = NDArray(Shape(batch_size), ctx);
   // Let MXNet infer shapes other parameters such as weights
   net.InferArgsMap(ctx, &args, args);
-
   // Initialize all parameters with uniform distribution U(-0.01, 0.01)
   auto initializer = Uniform(0.01);
   for (auto& arg : args) {
@@ -92,16 +90,22 @@ int main(int argc, char** argv) {
      ->SetParam("wd", weight_decay);
 
   // Create executor by binding parameters to the model
+  // 
   auto *exec = net.SimpleBind(ctx, args);
   auto arg_names = net.ListArguments();
-
+  for (int i=0; i<arg_names.size(); i++ )
+  {
+    LG << " 参数 "<< i<<"  为 " <<[i]; 
+  }
   // Start training
-  for (int iter = 0; iter < max_epoch; ++iter) {
+  for (int iter = 0; iter < max_epoch; ++iter) 
+  {
     int samples = 0;
     train_iter.Reset();
 
     auto tic = std::chrono::system_clock::now();
-    while (train_iter.Next()) {
+    while (train_iter.Next()) 
+    {
       samples += batch_size;
       auto data_batch = train_iter.GetDataBatch();
       // Set data and label
@@ -112,7 +116,8 @@ int main(int argc, char** argv) {
       exec->Forward(true);
       exec->Backward();
       // Update parameters
-      for (size_t i = 0; i < arg_names.size(); ++i) {
+      for (size_t i = 0; i < arg_names.size(); ++i) 
+      {
         if (arg_names[i] == "X" || arg_names[i] == "label") continue;
         opt->Update(i, exec->arg_arrays[i], exec->grad_arrays[i]);
       }
@@ -121,7 +126,8 @@ int main(int argc, char** argv) {
 
     Accuracy acc;
     val_iter.Reset();
-    while (val_iter.Next()) {
+    while (val_iter.Next())
+   {
       auto data_batch = val_iter.GetDataBatch();
       data_batch.data.CopyTo(&args["X"]);
       data_batch.label.CopyTo(&args["label"]);
