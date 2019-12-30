@@ -63,8 +63,8 @@ GraphExecutor::~GraphExecutor() {
 
 void GraphExecutor::Forward(bool is_train) 
 {
-  LG<<"进入D:\mxnet_wwc_2020\mxnet_wwc_2020\src\executor\graph_executor.cc 里面";
-  LG<<" 运行  RunOps(is_train, 0, num_forward_nodes_);  num_forward_nodes_ 为"<<num_forward_nodes_;
+  LG <<"进入D:\mxnet_wwc_2020\mxnet_wwc_2020\src\executor\graph_executor.cc 里面";
+  LG <<" 运行  RunOps(is_train, 0, num_forward_nodes_);  num_forward_nodes_ 为"<<num_forward_nodes_;
   RunOps(is_train, 0, num_forward_nodes_);
 }
 
@@ -80,8 +80,10 @@ void GraphExecutor::PartialForward(bool is_train, int step, int *step_left) {
 void GraphExecutor::Backward(const std::vector<NDArray>& head_grads, bool is_train) {
   const auto& idx = graph_.indexed_graph();
   if (num_forward_inputs_ != idx.input_nodes().size()) {
-    for (size_t i = 0; i < head_grad_array_.size(); ++i) {
-      if (!head_grad_array_[i].is_none()) {
+    for (size_t i = 0; i < head_grad_array_.size(); ++i)
+     {
+      if (!head_grad_array_[i].is_none()) 
+      {
         CHECK(i < head_grads.size() && !head_grads[i].is_none())
             << "Because the last operator is not Loss function, "
             << "head_gradient is required when calling backward. "
