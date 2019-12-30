@@ -123,12 +123,12 @@ int main(int argc, char** argv) {
       data_batch.label.CopyTo(&args["label"]);
 
       // Compute gradients
-       LG << "  exec->Forward(true)  开始执行 ********************************** "
+       LG << "  exec->Forward(true)  开始执行 ********************************** ";
       exec->Forward(true);
-       LG << "  exec->Backward()     开始执行 ********************************** "
+       LG << "  exec->Backward()     开始执行 ********************************** ";
       exec->Backward();
       // Update parameters
-      LG << "  opt->Update            开始执行 ********************************** "
+      LG << "  opt->Update            开始执行 ********************************** ";
       for (size_t i = 0; i < arg_names.size(); ++i) 
       {
         

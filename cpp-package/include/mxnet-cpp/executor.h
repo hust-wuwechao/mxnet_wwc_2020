@@ -61,7 +61,7 @@ class Executor {
   void Forward(bool is_train) 
   {
     // 
-    LG<<"MXExecutorForward(handle_, is_train ? 1 : 0);"
+    LG<<"MXExecutorForward(handle_, is_train ? 1 : 0);";
     MXExecutorForward(handle_, is_train ? 1 : 0);
     mx_uint out_size;
     NDArrayHandle *out_array;
