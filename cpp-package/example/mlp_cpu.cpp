@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
   const int image_size = 28;
   const std::vector<int> layers{128, 64, 10};
   const int batch_size = 100;
-  const int max_epoch = 10;
+  const int max_epoch = 3;
   const float learning_rate = 0.1;
   const float weight_decay = 1e-2;
 
@@ -145,7 +145,7 @@ int main(int argc, char** argv) {
         opt->Update(i, exec->arg_arrays[i], exec->grad_arrays[i]);
       }
     }
-    
+
     auto toc = std::chrono::system_clock::now();
 
     Accuracy acc;
