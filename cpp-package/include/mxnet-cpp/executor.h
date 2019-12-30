@@ -116,13 +116,18 @@ class Executor {
   * \brief arrays store the outputs of forward
   */
   std::vector<NDArray> outputs;
-  std::map<std::string, NDArray> arg_dict() {
+  std::map<std::string, NDArray> arg_dict() 
+  {
+    // symbol_.ListArguments() 得到的是参数的名字
     return GetDict(symbol_.ListArguments(), arg_arrays);
   }
-  std::map<std::string, NDArray> grad_dict() {
+  std::map<std::string, NDArray> grad_dict()
+  {
+    //symbol_.ListArguments() 得到的是
     return GetDict(symbol_.ListArguments(), grad_arrays);
   }
-  std::map<std::string, NDArray> aux_dict() {
+  std::map<std::string, NDArray> aux_dict() 
+  {
     return GetDict(symbol_.ListAuxiliaryStates(), aux_arrays);
   }
 

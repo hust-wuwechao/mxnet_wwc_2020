@@ -108,6 +108,14 @@ int main(int argc, char** argv) {
   {
     LG << " 参数 "<< i<<"  为 " <<arg_names[i]; 
   }
+  auto aux= net.ListAuxiliaryStates();
+  for (int i=0; i<aux.size(); i++ )
+  {
+    LG << " 参数 "<< i<<"  为 " <<arg_names[i]; 
+  }
+
+  
+  
   // Start training
   for (int iter = 0; iter < max_epoch; ++iter) 
   {
