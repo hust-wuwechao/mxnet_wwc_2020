@@ -60,9 +60,10 @@ class Executor {
   */
   void Forward(bool is_train) 
   {
-    // 
+    //  
     LG<<"MXExecutorForward(handle_, is_train ? 1 : 0);";
-    MXExecutorForward(handle_, is_train ? 1 : 0);
+    // 在这里面阻塞了。
+    MXExecutorForward(handle_, is_train ? 1 : 0);   
     mx_uint out_size;
     NDArrayHandle *out_array;
     CHECK_EQ(MXExecutorOutputs(handle_, &out_size, &out_array), 0);  

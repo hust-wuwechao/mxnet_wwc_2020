@@ -36,10 +36,11 @@ namespace cpp {
 
 typedef unsigned index_t;
 
-enum OpReqType {
+enum OpReqType 
+{
   /*! \brief no operation, do not write anything */
   kNullOp,
-  /*! \brief write gradient to provided space */
+  /*! \brief write gradient to provided space 明白 */
   kWriteTo,
   /*!
   * \brief perform an inplace write,

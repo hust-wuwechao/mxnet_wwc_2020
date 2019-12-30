@@ -48,8 +48,10 @@ int MXExecutorFree(ExecutorHandle handle) {
   API_END();
 }
 
-int MXExecutorForward(ExecutorHandle handle, int is_train) {
-  LG << "MXExecutorForward 函数里面 D:\mxnet_wwc_2020\mxnet_wwc_2020\src\c_api\c_api_executor.cc";
+int MXExecutorForward(ExecutorHandle handle, int is_train) 
+{
+  LG << "MXExecutorForward 函数里面  src c_api c_api_executor.cc";
+  LG << "MXExecutorForward 函数里面  src c_api c_api_executor.cc";
   API_BEGIN();
   Executor *exec = static_cast<Executor*>(handle);
   exec->Forward(is_train != 0);
