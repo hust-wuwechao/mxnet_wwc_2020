@@ -66,6 +66,7 @@ GraphExecutor::~GraphExecutor() {
 
 void GraphExecutor::Forward(bool is_train) 
 {
+  os << "graph_executor.cc   RunOps ";
   LOG(INFO) << "graph_executor.cc   RunOps \t";
   //LG << " 进入graph_executor.cc 里面";
   //LG << " 运行  RunOps(is_train, 0, num_forward_nodes_);  num_forward_nodes_ 为"<<num_forward_nodes_;
@@ -408,6 +409,7 @@ void GraphExecutor::Init(nnvm::Symbol symbol,
  * and their data_entry_ of the executor. This function
  * is called for regular simple_bind flow, i.e. no
  * shared data arrays are provided.
+ * 没有数据共享
  */
 void GraphExecutor::InitArguments(const nnvm::IndexedGraph& idx,
                                   const nnvm::ShapeVector& inferred_shapes,
