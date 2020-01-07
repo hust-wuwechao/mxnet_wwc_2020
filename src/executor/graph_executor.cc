@@ -66,7 +66,7 @@ GraphExecutor::~GraphExecutor() {
 
 void GraphExecutor::Forward(bool is_train) 
 {
-  os << "graph_executor.cc   RunOps ";
+   LG << "graph_executor.cc   RunOps ";
   LOG(INFO) << "graph_executor.cc   RunOps \t";
   //LG << " 进入graph_executor.cc 里面";
   //LG << " 运行  RunOps(is_train, 0, num_forward_nodes_);  num_forward_nodes_ 为"<<num_forward_nodes_;
