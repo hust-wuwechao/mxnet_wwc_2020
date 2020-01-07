@@ -42,6 +42,7 @@ namespace exec {
 using namespace mxnet::common;
 
 GraphExecutor::GraphExecutor() {
+  LG 
   log_verbose_ = dmlc::GetEnv("MXNET_EXEC_VERBOSE_LOGGING", false);
   need_grad_ = false;
   subgraph_property_ = dmlc::GetEnv("MXNET_SUBGRAPH_BACKEND", std::string());
@@ -64,7 +65,7 @@ GraphExecutor::~GraphExecutor() {
 
 void GraphExecutor::Forward(bool is_train) 
 {
-  LOG(INFO) << "进入graph_executor.cc 里面  RunOps \t";
+  LOG(INFO) << "graph_executor.cc   RunOps \t";
   //LG << " 进入graph_executor.cc 里面";
   //LG << " 运行  RunOps(is_train, 0, num_forward_nodes_);  num_forward_nodes_ 为"<<num_forward_nodes_;
   RunOps(is_train, 0, num_forward_nodes_);
@@ -1334,7 +1335,8 @@ void GraphExecutor::RunOps(bool is_train, size_t topo_start, size_t topo_end) {
   }
 
   // Push Ops
-  for (size_t nid = topo_start; nid < topo_end; ++nid) {
+  for (size_t nid = topo_start; nid < topo_end; ++nid)
+   {
     auto seg_op = cached_seg_opr_[nid];
     // Check segments first
     if (monitor_callback_ == nullptr && seg_op.opr != nullptr && seg_op.topo_end <= topo_end) {
@@ -1355,10 +1357,12 @@ void GraphExecutor::RunOps(bool is_train, size_t topo_start, size_t topo_end) {
       CHECK_EQ(opnode.exec->in_array.size(), 1U);
       CHECK_EQ(opnode.exec->out_array.size(), 1U);
       CopyFromTo(opnode.exec->in_array[0], &(opnode.exec->out_array[0]));
-    } else if (opnode.exec->exec_type() == ExecType::kSubgraphExec) {
+    } else if (opnode.exec->exec_type() == ExecType::kSubgraphExec) 
+    {
       // If the node contains a subgraph, we can't execute it in the engine.
       opnode.exec->Run(opnode.exec->op_ctx.run_ctx, false);
-    } else if (opnode.cached_opr != nullptr) {
+    } else if (opnode.cached_opr != nullptr) 
+    {
       bool profiling = profiler::Profiler::Get()->GetState() == profiler::Profiler::kRunning;
       Engine::Get()->Push(opnode.cached_opr, opnode.ctx, 0, profiling);
     } else {

@@ -60,7 +60,6 @@ nnvm::NodeEntry AggregateGradient(std::vector<nnvm::NodeEntry>&& v);
 class GraphExecutor : public Executor {
  public:
   using Executor::MonitorCallback;
-
   GraphExecutor();
   virtual ~GraphExecutor();
   void Forward(bool is_train) override;
@@ -217,14 +216,18 @@ class GraphExecutor : public Executor {
   */
   CachedSegOpr CreateCachedSegOpr(size_t topo_start, size_t topo_end);
   // run the monitor callback for node `nid`
+  //  
   void ExecuteMonCallback(size_t nid);
+
   // peform bulking and segmentation on an inference graph
   void BulkInferenceOpSegs();
+
   // perform bulking and segmentation on a training graph
   void BulkTrainingOpSegs(size_t total_num_nodes);
   // indicate whether there is a backward graph for gradients.
   bool need_grad_;
   // internal graph
+
   nnvm::Graph graph_;
   // operator node
   std::vector<OpNode> op_nodes_;
@@ -232,21 +235,30 @@ class GraphExecutor : public Executor {
   std::vector<NDArray> data_entry_;
   // internal data pool of allocated entries.
   // these allocated entries can be used for static memory sharing between executors.
+  //  ??????????????????????????
   std::vector<NDArray> data_pool_;
   // output arrays
   std::vector<NDArray> output_arrays_;
   // input argument map, key is arg name, value is arg's NDArray
+  // 
+
   std::unordered_map<std::string, NDArray> in_arg_map_;
   // arg grad map, key is arg name, value is arg grad NDArray
+  //  明白了
+
   std::unordered_map<std::string, NDArray> arg_grad_map_;
   // aux state map, key is aux state name, value is aux state NDArray
   std::unordered_map<std::string, NDArray> aux_state_map_;
   // gradient store
+
   std::vector<std::pair<OpReqType, NDArray> > grad_store_;
   // array to hold head gradient.
+
   std::vector<NDArray> head_grad_array_;
+
   // entry to hold head gradient
   std::vector<nnvm::NodeEntry> head_grad_entry_;
+
   // the index map of entry to map.
   std::unordered_map<const nnvm::Node*, size_t> head_grad_map_;
   // number of outputs.

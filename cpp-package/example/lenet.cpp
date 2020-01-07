@@ -145,7 +145,8 @@ class Lenet {
     Executor *exe = lenet.SimpleBind(ctx_dev, args_map);
     auto arg_names = lenet.ListArguments();
 
-    for (int ITER = 0; ITER < max_epoch; ++ITER) {
+    for (int ITER = 0; ITER < max_epoch; ++ITER)
+     {
       size_t start_index = 0;
       while (start_index < train_num) {
         if (start_index + batch_size > train_num) {

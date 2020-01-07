@@ -356,6 +356,7 @@ inline Executor *Symbol::SimpleBind(
     const std::map<std::string, NDArray>   &aux_map)
 {
   // 新建4个数组
+  LG <<"enter  simple SimpleBind "; 
   std::vector<NDArray> arg_arrays;
   std::vector<NDArray> grad_arrays;
   std::vector<OpReqType> grad_reqs;
