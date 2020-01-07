@@ -29,7 +29,8 @@
 
 namespace mxnet {
 namespace engine {
-inline Engine* CreateEngine() {
+inline Engine* CreateEngine() 
+{
   const char *type = getenv("MXNET_ENGINE_TYPE");
   const bool default_engine = (type == nullptr);
   if (type == nullptr) type = "ThreadedEnginePerDevice";
@@ -41,9 +42,11 @@ inline Engine* CreateEngine() {
   {
     
     ret = CreateNaiveEngine();
-  } else if (stype == "ThreadedEngine") {
+  } else if (stype == "ThreadedEngine") 
+  {
     ret = CreateThreadedEnginePooled();
-  } else if (stype == "ThreadedEnginePerDevice") {
+  } else if (stype == "ThreadedEnginePerDevice") 
+  {
     ret = CreateThreadedEnginePerDevice();
   }
   #else
@@ -60,13 +63,16 @@ inline Engine* CreateEngine() {
 }
 }  // namespace engine
 
-std::shared_ptr<Engine> Engine::_GetSharedRef() {
+std::shared_ptr<Engine> Engine::_GetSharedRef()
+{
   static std::shared_ptr<Engine> sptr(engine::CreateEngine());
   return sptr;
 }
 
 Engine* Engine::Get() 
 {
+  
+  // 这里面无法得到这个就是单例啊
   static Engine *inst = _GetSharedRef().get();
   return inst;
 }

@@ -230,7 +230,8 @@ class KVStoreDist : public KVStoreLocal {
       const auto storage_type = grouped_vals[i][0]->storage_type();
       CHECK_EQ(storage_type, kDefaultStorage)
                << "Expected stype of value to be kDefaultStorage";
-      if (recv_buf.is_none()) {
+      if (recv_buf.is_none())
+       {
         // it may happen for the first time a no-rank-0 worker pull the weight.
         recv_buf = NDArray(grouped_vals[i][0]->shape(), pinned_ctx_,
                            true, grouped_vals[i][0]->dtype());
@@ -324,6 +325,13 @@ class KVStoreDist : public KVStoreLocal {
       NDArray merged = do_merge ? comm_->Reduce(key, vals, priority) : vals[0];
 
       const auto storage_type = merged.storage_type();
+
+       /**
+     * \brief buffer for non-compressed data.
+     * When gradient compression is active, this is used
+     * for the data in pull and for original data in push
+     */
+      //std::unordered_map<int, NDArray> comm_buf_;
       auto &comm_buf = comm_buf_[key];
       if (merged.ctx().dev_mask() == cpu::kDevMask) {
         // Start of a push doesn't guarantee that the previous pushes are completed.
@@ -409,7 +417,8 @@ class KVStoreDist : public KVStoreLocal {
       "KVStoreDistCompressedPush");
   }
 
-  void PushDefault(int key, const NDArray &send_buf, const PSKV& pskv, int priority) {
+  void PushDefault(int key, const NDArray &send_buf, const PSKV& pskv, int priority) 
+  {
     auto push_to_servers =
         [this, key, pskv, send_buf](RunContext rctx, Engine::CallbackOnComplete cb) {
           const int dtype = send_buf.dtype();

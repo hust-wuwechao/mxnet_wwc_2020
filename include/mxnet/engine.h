@@ -233,7 +233,7 @@ class MXNET_API Engine {
   /*!\brief virtual destructor */
   virtual ~Engine() noexcept(false) {}
   /*!
-   * \return Engine singleton.
+   * \ return Engine singleton.
    * 返回一个单例子
    */
   static Engine* Get();
