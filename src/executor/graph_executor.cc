@@ -41,7 +41,8 @@ namespace exec {
 
 using namespace mxnet::common;
 
-GraphExecutor::GraphExecutor() {
+GraphExecutor::GraphExecutor() 
+{
   LG << "enter GraphExecutor::GraphExecutor()  ";
   log_verbose_ = dmlc::GetEnv("MXNET_EXEC_VERBOSE_LOGGING", false);
   need_grad_ = false;
@@ -367,7 +368,8 @@ void GraphExecutor::Init(nnvm::Symbol symbol,
       }
       ++arg_top;
     }
-    if (log_verbose_) {
+    if (log_verbose_) 
+    {
       LOG(INFO) << "\tassign data entry\t" << eid << " as "
                 << common::stype_string(data_entry_[eid].storage_type()) << " (input)";
     }
@@ -420,6 +422,7 @@ void GraphExecutor::InitArguments(const nnvm::IndexedGraph& idx,
                                   std::vector<NDArray>* aux_state_vec) {
   // initialize in_args, arg_grads, and aux_states
   // populate grad_store_
+  LOG(INFO) << "InitArgumentst" ;
   data_entry_.resize(idx.num_node_entries());
   size_t arg_top = 0, aux_top = 0;
   const auto& mutable_nodes = idx.mutable_input_nodes();
@@ -492,6 +495,7 @@ void GraphExecutor::InitArguments(const nnvm::IndexedGraph& idx,
                                   std::vector<NDArray>* arg_grad_vec,
                                   std::vector<NDArray>* aux_state_vec) {
   // initialize in_args, arg_grads, and aux_states and populate grad_store_
+  LOG(INFO) << "InitArgumentst" ;
   data_entry_.resize(idx.num_node_entries());
   size_t arg_top = 0, aux_top = 0;
   const auto& mutable_nodes = idx.mutable_input_nodes();
@@ -619,6 +623,7 @@ void GraphExecutor::FinishInitGraph(nnvm::Symbol symbol,
                                     nnvm::Graph g,
                                     Executor* shared_exec,
                                     const nnvm::NodeEntryMap<NDArray>& feed_dict) {
+  LOG(INFO) << "FinishInitGraph" ;
   const auto& idx = g.indexed_graph();
   const auto& vstorage_type = g.GetAttr<StorageTypeVector>("storage_type");
 
@@ -682,18 +687,25 @@ void GraphExecutor::FinishInitGraph(nnvm::Symbol symbol,
 }
 
 /*!
+   简单绑定只需要提供输入的维度数据的类型即可
  * \brief GraphExecutor initializer for simple bind flow in
  * which only certain input shapes and dtypes are provided by users.
  * The initializer uses these shapes and dtypes to perform
- * shape and dtype inferences, and then create NDArrays
- * to populate data entries of the graph. The created NDArrays
+ * shape and dtype inferences, 进行形状的推测 
+ * and then create NDArrays    创建ND数组
+ * to populate data entries of the graph. 
+ * The created NDArrays
  * for in_args, arg_grads and aux_states are passed to the
  * front end to attach the created executor.
+ * // 附加到执行器上面去
  * In front end, if the simple_bind flow is trigger by
- * _bind_ith_exec, the shared data arrays of DataParallelExecutorGroup
+ * _bind_ith_exec, 
+ * the shared data arrays of DataParallelExecutorGroup
  * and shared executor will be taken into account in creating
  * NDArrays for in_args, arg_grads, and aux_states for resuing
  * already allocated memory.
+ * 嗯嗯？？？？？？？？？
+ * 为什么shared executor 会被共享呢？
  */
 void GraphExecutor::Init(nnvm::Symbol symbol,
                          const Context& default_ctx,
@@ -898,6 +910,9 @@ Executor* GraphExecutor::Reshape(const bool partial_shaping,
 /*!
  * \brief This function is triggered by both simple_bind
  * and bind flows.
+ * 设置后向的图
+ * 创建设备和上下文
+ * 计算前向节点的个数
  * Setup backward graph, create device and context
  * attributes in the graph, and calculate the number
  * of forward nodes.
@@ -909,10 +924,15 @@ Graph GraphExecutor::InitGraph(nnvm::Symbol symbol,
                                const std::vector<Context>& arg_grad_ctxes,
                                const std::vector<Context>& aux_state_ctxes,
                                const std::vector<OpReqType>& grad_req_types) {
-  // setup gradient
+  //  setup gradient
+  //  创建梯度节点
+
+  LG <<"enter  GraphExecutor::InitGraph";
   nnvm::Graph g = InitFullGraph(symbol, grad_req_types);
 
-  // create "device" and "context" attrs for the graph
+
+  //  create "device" and "context" attrs for the graph
+  //  为所有的节点设置上下文
   g = AssignContext(g, default_ctx, ctx_map,
                     in_arg_ctxes,
                     arg_grad_ctxes,
@@ -921,13 +941,18 @@ Graph GraphExecutor::InitGraph(nnvm::Symbol symbol,
                     num_forward_inputs_,
                     num_forward_outputs_);
 
+
   const auto& idx = g.indexed_graph();
-  // get number of nodes used in forward pass
+  //  get number of nodes used in forward pass
+  //  前项节点的个数
+
   num_forward_nodes_ = 0;
-  for (size_t i = 0; i < num_forward_outputs_; ++i) {
+  for (size_t i = 0; i < num_forward_outputs_; ++i) 
+  {
     num_forward_nodes_ = std::max(
         num_forward_nodes_, static_cast<size_t>(idx.outputs()[i].node_id + 1));
   }
+  LG << "num_forward_nodes_  "<<num_forward_nodes_;
   return g;
 }
 
@@ -1600,6 +1625,7 @@ static nnvm::Symbol PartitionGraph(const nnvm::Symbol& src,
 }
 }  // namespace exec
 
+
 Executor *Executor::SimpleBind(nnvm::Symbol symbol,
                                const Context& default_ctx,
                                const std::map<std::string, Context>& group2ctx,
@@ -1616,13 +1642,15 @@ Executor *Executor::SimpleBind(nnvm::Symbol symbol,
                                std::vector<NDArray>* aux_states,
                                std::unordered_map<std::string, NDArray>* shared_buffer,
                                Executor* shared_exec) {
+  LG <<"enter Executor::SimpleBind" ;
   auto exec = new exec::GraphExecutor();
   if (!exec->subgraph_property().empty()) {
     symbol = exec::PartitionGraph(symbol, exec->subgraph_property(), arg_shape_map, arg_dtype_map,
                                   arg_stype_map, default_ctx, group2ctx, in_arg_ctxes,
                                   aux_state_ctxes);
   }
-  exec->Init(symbol, default_ctx, group2ctx,
+  exec->Init(symbol, default_ctx, 
+             group2ctx,
              in_arg_ctxes, arg_grad_ctxes, aux_state_ctxes,
              arg_shape_map, arg_dtype_map, arg_stype_map,
              grad_req_types, shared_arg_names,
@@ -1638,10 +1666,13 @@ Executor *Executor::Bind(nnvm::Symbol symbol,
                          const std::vector<NDArray> &arg_grad_store,
                          const std::vector<OpReqType> &grad_req_type,
                          const std::vector<NDArray> &aux_states,
-                         Executor* shared_exec) {
+                         Executor* shared_exec) 
+ {
+  LG <<"enter Executor::Bind" ;
   auto exec = new exec::GraphExecutor();
   std::vector<NDArray> tmp_in_args = in_args;
-  if (!exec->subgraph_property().empty()) {
+  if (!exec->subgraph_property().empty()) 
+  {
     symbol = exec::PartitionGraph(symbol, exec->subgraph_property(), &tmp_in_args, aux_states,
                                   default_ctx, group2ctx);
   }
