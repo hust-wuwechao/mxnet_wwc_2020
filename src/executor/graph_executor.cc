@@ -42,7 +42,7 @@ namespace exec {
 using namespace mxnet::common;
 
 GraphExecutor::GraphExecutor() {
-  LG 
+  LG << "enter GraphExecutor::GraphExecutor()  ";
   log_verbose_ = dmlc::GetEnv("MXNET_EXEC_VERBOSE_LOGGING", false);
   need_grad_ = false;
   subgraph_property_ = dmlc::GetEnv("MXNET_SUBGRAPH_BACKEND", std::string());
