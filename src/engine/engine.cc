@@ -34,10 +34,12 @@ inline Engine* CreateEngine() {
   const bool default_engine = (type == nullptr);
   if (type == nullptr) type = "ThreadedEnginePerDevice";
   std::string stype = type;
-
+  LOG(INFO)<<"引擎的类型为 "<<stype;
   Engine *ret = nullptr;
   #if MXNET_PREDICT_ONLY == 0
-  if (stype == "NaiveEngine") {
+  if (stype == "NaiveEngine") 
+  {
+    
     ret = CreateNaiveEngine();
   } else if (stype == "ThreadedEngine") {
     ret = CreateThreadedEnginePooled();
@@ -63,7 +65,8 @@ std::shared_ptr<Engine> Engine::_GetSharedRef() {
   return sptr;
 }
 
-Engine* Engine::Get() {
+Engine* Engine::Get() 
+{
   static Engine *inst = _GetSharedRef().get();
   return inst;
 }

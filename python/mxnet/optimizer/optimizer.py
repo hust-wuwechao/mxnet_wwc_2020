@@ -189,8 +189,9 @@ class Optimizer(object):
 
         Some optimizers require additional states, e.g. as momentum, in addition
         to gradients in order to update weights. This function creates state
-        for a given weight which will be used in `update`. This function is
-        called only once for each weight.
+        for a given weight which will be used in `update`. 
+        #对于每一个的权重只会调用一次
+        This function is  called only once for each weight.
 
         Parameters
         ----------

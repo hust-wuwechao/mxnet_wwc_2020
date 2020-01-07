@@ -43,11 +43,13 @@
 namespace mxnet {
 
 // forward declaration
-namespace exec {
+namespace exec 
+{
 class GraphExecutor;
 }
 
-namespace exec {
+namespace exec 
+{
 
 using nnvm::Graph;
 
@@ -139,8 +141,11 @@ class GraphExecutor : public Executor {
     // cached mutate vars, used for seg ops creation
     std::vector<Engine::VarHandle> mutate_vars;
   };
-  // a cached segment operator that executes a segment
-  struct CachedSegOpr {
+  //  a cached segment operator that executes a segment
+  //  执行一个段是什么意思？
+  //
+  struct CachedSegOpr 
+  {
     // context of the operator
     Context ctx;
     // begin in topo order
@@ -196,9 +201,10 @@ class GraphExecutor : public Executor {
   void InitCachedOps();
   // initialize the opr segments for bulk exec
   void InitOpSegs();
-  // initialize the resources in the graph
-  // initialize the memory of data entries
-  // shared_pool: extra memory shared from other parts
+  //  initialize the resources in the graph
+  //  initialize the memory of data entries
+  //  shared_pool: extra memory shared from other parts
+
   void InitDataEntryMemory(std::vector<NDArray>* shared_pool);
   // run ops from topo order start to end
   void RunOps(bool is_train, size_t topo_start, size_t topo_end);

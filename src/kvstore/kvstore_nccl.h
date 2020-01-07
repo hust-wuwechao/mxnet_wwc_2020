@@ -107,12 +107,18 @@ class KVStoreNCCL : public KVStoreLocal {
         nccl_called = true;
       }
       auto& merged = *(merged_ptrs[i]);
+
+      // 位于CPU的参数
       NDArray& local = local_[key];
+
       if (updater_ != nullptr) {
         CHECK(!local.is_none()) << "key " << key << " has not been inited";
         // if merged is on gpu, we may need copy weight from cpu to gpu
         if (merged.ctx().dev_mask() != cpu::kDevMask &&
-            local.ctx().dev_mask() == cpu::kDevMask) {
+            local.ctx().dev_mask() == cpu::kDevMask) 
+        {
+          //   这里复制参数从CPU到GPU
+          //   以后local—— 就变成位于GPU里面了
           local = local.Copy(merged.ctx());
         }
       }
@@ -127,6 +133,7 @@ class KVStoreNCCL : public KVStoreLocal {
     for (size_t i = 0; i < uniq_keys.size(); ++i) {
       int key = uniq_keys[i];
       auto& merged = *(merged_ptrs[i]);
+      // 复制到GPU的参数了
       NDArray& local = *(local_ptrs[i]);
       if (updater_ != nullptr) {
         // call the updater with string keys
@@ -136,10 +143,12 @@ class KVStoreNCCL : public KVStoreLocal {
           // after all language bindings picks up string interface changes
           const std::string &str_key = reverse_str_key_dict_[key];
           str_updater_(str_key, merged,  &local);
-        } else {
+        } else 
+        {
           updater_(key, merged,  &local);
         }
-      } else {
+      } else
+       {
         local = merged;
       }
     }
@@ -158,7 +167,10 @@ class KVStoreNCCL : public KVStoreLocal {
     for (size_t i = 0; i < uniq_keys.size(); ++i) {
       int key = uniq_keys[i];
       const NDArray& local = local_[key];
+
+      // 这里面得到位于CPU的参数结果
       locals.push_back(local_[key]);
+
       CHECK(!local.is_none()) << "key " << key << " has not been inited";
       if (grouped_vals[i].size() > 1) {
         // We issued NCCL kernels, need to synchronize
@@ -213,14 +225,16 @@ class KVStoreNCCL : public KVStoreLocal {
   virtual void Reduce(const std::vector<int> keys,
                       const std::vector<std::vector<NDArray>>& srcs,
                       int priority,
-                      std::vector<const NDArray*>* merged_ptrs) {
+                      std::vector<const NDArray*>* merged_ptrs)
+                       {
     std::vector<size_t> root_ids(keys.size());
     std::vector<NDArray> reduces(keys.size());
     merged_ptrs->resize(keys.size());
     std::vector<Engine::VarHandle> const_vars;
     std::vector<Engine::VarHandle> mutate_vars;
 
-    for (size_t k = 0; k < keys.size(); ++k) {
+    for (size_t k = 0; k < keys.size(); ++k) 
+    {
       auto& key = keys[k];
       auto& src = srcs[k];
       auto& root_id = root_ids[k];
@@ -258,7 +272,8 @@ class KVStoreNCCL : public KVStoreLocal {
       // Need to pass NDArrays by value to the engine
       reduces[k] = reduce;
 
-      for (size_t i = 0; i < src.size(); ++i) {
+      for (size_t i = 0; i < src.size(); ++i) 
+      {
         const_vars.push_back(src[i].var());
       }
       mutate_vars.push_back(reduce.var());
@@ -269,18 +284,23 @@ class KVStoreNCCL : public KVStoreLocal {
 #if (NCCL_MAJOR > 2 || (NCCL_MAJOR == 2 && NCCL_MINOR > 1))
         ncclGroupStart();
 #endif
-        for (size_t k = 0; k < srcs.size(); ++k) {
+        for (size_t k = 0; k < srcs.size(); ++k)
+         {
           auto& src = srcs[k];
           auto& root_id = root_ids[k];
           auto& reduce = reduces[k];
-          if (src.size() <= 1) {
+          if (src.size() <= 1)
+           {
             continue;
           }
           int root = nccl_data_[src[root_id].ctx().dev_id].rank;
           ncclGroupStart();
-          for (size_t i = 0; i < src.size(); ++i) {
+          // 对于每一个设备。
+          for (size_t i = 0; i < src.size(); ++i) 
+          {
             NCCLEntry cur = nccl_data_[src[i].ctx().dev_id];
-            if (i == root_id) {
+            if (i == root_id) 
+            {
             MSHADOW_TYPE_SWITCH(src[i].dtype(), DType,
             ncclReduce(src[i].data().dptr<DType>(),
                               reduce.data().dptr<DType>(),
@@ -290,7 +310,9 @@ class KVStoreNCCL : public KVStoreLocal {
                               root,
                               cur.comm,
                               cur.stream););
-            } else {
+            } 
+            else 
+            {
             MSHADOW_TYPE_SWITCH(src[i].dtype(), DType,
             ncclReduce(src[i].data().dptr<DType>(),
                               NULL,
