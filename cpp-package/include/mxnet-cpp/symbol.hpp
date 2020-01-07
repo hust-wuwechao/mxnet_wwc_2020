@@ -372,7 +372,6 @@ inline Executor *Symbol::SimpleBind(
   // 接下来有这4个数组来负责。构建 Executor
   LG<<" arg_arrays, grad_arrays, grad_reqs, aux_arrays"<<arg_arrays.size()<< grad_arrays.size()<< grad_reqs.size()<<aux_arrays.size();
   //8880
-  // 
   return new Executor(*this, context, arg_arrays, grad_arrays, grad_reqs,
                       aux_arrays);
 }

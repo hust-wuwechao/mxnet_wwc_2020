@@ -81,6 +81,7 @@ inline Executor::Executor(const Symbol &symbol, Context context,
   }
 
   LG<<"CHECK_EQ(MXExecutorBindEX";
+  
   ExecutorHandle *shared_exec_handle =
       shared_exec == nullptr ? nullptr : &shared_exec->handle_;  
   CHECK_EQ(MXExecutorBindEX(symbol.GetHandle(), 

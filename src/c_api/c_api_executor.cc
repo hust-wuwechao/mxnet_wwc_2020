@@ -53,7 +53,7 @@ int MXExecutorFree(ExecutorHandle handle) {
 int MXExecutorForward(ExecutorHandle handle, int is_train) 
 {
   API_BEGIN(); 
-  LG << "MXExecutorBackward";      
+  LOG(INFO) << "MXExecutorBackward";   
   Executor *exec = static_cast<Executor*>(handle);
   exec->Forward(is_train != 0);
   API_END();
@@ -153,7 +153,8 @@ int MXExecutorBindEX(SymbolHandle symbol_handle,
                      mx_uint aux_states_len,
                      NDArrayHandle *aux_states,
                      ExecutorHandle shared_exec,
-                     ExecutorHandle *out) {
+                     ExecutorHandle *out) 
+                     {
   API_BEGIN();
   nnvm::Symbol *symb = static_cast<nnvm::Symbol*>(symbol_handle);
   Context ctx = Context::Create(static_cast<Context::DeviceType>(dev_type), dev_id);

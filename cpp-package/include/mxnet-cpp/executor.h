@@ -56,7 +56,9 @@ class Executor {
                std::map<std::string, Context>(),
            Executor *shared_exec = nullptr);
 
-  explicit Executor(const ExecutorHandle &h) { handle_ = h; }
+  //C++ 什么是句柄？为什么会有句柄？HANDLE - vinsonLu - 博客园  https://www.cnblogs.com/vinsonLu/p/3613453.html
+  explicit Executor(const ExecutorHandle &h)
+   { handle_ = h; }
   /*!
   * \brief Perform a Forward operation of Operator
   *  After this operation, user can get the result by using function head.

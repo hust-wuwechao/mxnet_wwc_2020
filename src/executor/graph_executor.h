@@ -55,7 +55,7 @@ using nnvm::Graph;
 
 nnvm::NodeEntry AggregateGradient(std::vector<nnvm::NodeEntry>&& v);
 
-// graph executors
+//  graph executors
 //  继承来自 Executor
 class GraphExecutor : public Executor {
  public:
